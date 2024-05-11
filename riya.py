@@ -24,11 +24,15 @@ containing just a comment) are ignored. Lastly, a line could contain a LABEL:
 tag, which can be used with a beq instruction to reference the following
 instruction as the target of a conditional jump.
 
-The resulting machine code does not have any prelude or epilogue, but contains
-just the instructions written in the input assembly file.
+If no output file is specified, the output file will have the same relative path
+and basename as the input file but with the extension .rvt. The resulting
+machine code does not have any prelude or epilogue, but contains just the
+instructions written in the input assembly file.
 """)
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("file_path", help="RISC-V assembly file")
+    parser.add_argument("-o", "--output", help="Path to the output file"
+                        "containing the RISC-V machine code")
     return parser.parse_args()
 
 
@@ -48,6 +52,25 @@ def read_lines(file_path):
         print("An error occurred:", e)
         return None
 
+def debug_stripped(args, input_lines):
+    if args.debug:
+        print("Assembly stripped from comments and whitespace:")
+        for line in lines:
+            print(line)
+
+
+def write_output(args, lines):
+    output_file_path = args.file_path.replace(".asm", ".rvt")
+    if args.output:
+        output_file_path = args.output
+
+    if args.debug:
+        print("Output file:", output_file_path)
+
+    f = open(output_file_path, "w")
+    lines = [line + "\n" for line in lines]
+    f.writelines(lines)
+
 
 def main():
     args = parse_args()
@@ -57,10 +80,14 @@ def main():
     if lines is None:
         return
 
-    if (args.debug):
-        print("Assembly stripped from comments and whitespace:")
-        for line in lines:
-            print(line)
+    debug_stripped(args, lines)
+
+    # lines = assemble(args, lines)
+
+    # debug_assembled(...)
+
+    write_output(args, lines)
+
 
 if __name__ == "__main__":
     main()
