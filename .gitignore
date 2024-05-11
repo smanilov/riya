@@ -1,0 +1,5 @@
+__pycache__/
+
+# RISC-V text and RISC-V binary files. According to no one.
+*.rvt
+*.rvb

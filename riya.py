@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import sys
 import argparse
+from assembler import assemble
 
 def parse_args():
     parser = argparse.ArgumentParser(description="""RISC-V yocto assembler
@@ -33,6 +34,8 @@ instructions written in the input assembly file.
     parser.add_argument("file_path", help="RISC-V assembly file")
     parser.add_argument("-o", "--output", help="Path to the output file"
                         "containing the RISC-V machine code")
+    parser.add_argument("--dry_run", action="store_true", help="Do not write"
+                        "output")
     return parser.parse_args()
 
 
@@ -52,7 +55,7 @@ def read_lines(file_path):
         print("An error occurred:", e)
         return None
 
-def debug_stripped(args, input_lines):
+def debug_stripped(args, lines):
     if args.debug:
         print("Assembly stripped from comments and whitespace:")
         for line in lines:
@@ -60,6 +63,9 @@ def debug_stripped(args, input_lines):
 
 
 def write_output(args, lines):
+    if (args.dry_run):
+        return
+
     output_file_path = args.file_path.replace(".asm", ".rvt")
     if args.output:
         output_file_path = args.output
@@ -82,7 +88,10 @@ def main():
 
     debug_stripped(args, lines)
 
-    # lines = assemble(args, lines)
+    lines = assemble(args, lines)
+
+    if lines is None:
+        return
 
     # debug_assembled(...)
 
