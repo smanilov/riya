@@ -1,4 +1,5 @@
-from syntax import syntax_check, is_label_decl
+from syntax import syntax_check, is_label_decl, is_r_type, is_mem, is_beq
+from translator import translate
 
 
 def get_label(line):
@@ -19,7 +20,7 @@ def map_labels(args, lines):
         else:
             offset += 4
 
-    if (args.debug):
+    if args.debug:
         print("Labels map:", result)
 
     return result
@@ -37,5 +38,7 @@ def assemble(args, lines):
         return None
 
     labels_map = map_labels(args, lines)
+
+    lines = translate(args, lines, labels_map)
 
     return lines

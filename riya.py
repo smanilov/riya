@@ -3,8 +3,10 @@ import sys
 import argparse
 from assembler import assemble
 
+
 def parse_args():
-    parser = argparse.ArgumentParser(description="""RISC-V yocto assembler
+    parser = argparse.ArgumentParser(
+        description="""RISC-V yocto assembler
 
 Note: this is a yocto assembler, because it can only assemble a very limited set
 of assembly instructions: add, sub, and, or, lw, sw, and beq. The format for
@@ -29,26 +31,29 @@ If no output file is specified, the output file will have the same relative path
 and basename as the input file but with the extension .rvt. The resulting
 machine code does not have any prelude or epilogue, but contains just the
 instructions written in the input assembly file.
-""")
+"""
+    )
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("file_path", help="RISC-V assembly file")
-    parser.add_argument("-o", "--output",
-                            help="Path to the output file containing the "
-                            "RISC-V machine code")
-    parser.add_argument("--dry_run", action="store_true",
-                            help="Do not write output")
-    parser.add_argument("--skip_errors", action="store_true",
-                            help="Skip lines that contain errors.")
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Path to the output file containing the " "RISC-V machine code",
+    )
+    parser.add_argument("--dry_run", action="store_true", help="Do not write output")
+    parser.add_argument(
+        "--skip_errors", action="store_true", help="Skip lines that contain errors."
+    )
     return parser.parse_args()
 
 
 def read_lines(file_path):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, "r") as file:
             lines = file.readlines()
             # Remove whitespace from each line
             lines = [line.strip() for line in lines]
-            lines = [line.split('#')[0] for line in lines]
+            lines = [line.split("#")[0] for line in lines]
             lines = [line for line in lines if len(line) > 0]
         return lines
     except FileNotFoundError:
@@ -58,6 +63,7 @@ def read_lines(file_path):
         print("An error occurred:", e)
         return None
 
+
 def debug_stripped(args, lines):
     if args.debug:
         print("Assembly stripped from comments and whitespace:")
@@ -66,7 +72,7 @@ def debug_stripped(args, lines):
 
 
 def write_output(args, lines):
-    if (args.dry_run):
+    if args.dry_run:
         return
 
     output_file_path = args.file_path.replace(".asm", ".rvt")
