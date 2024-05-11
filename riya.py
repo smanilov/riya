@@ -4,10 +4,10 @@ import argparse
 from assembler import assemble
 
 
-def parse_args():
+def make_parser():
     parser = argparse.ArgumentParser(
-        description="""RISC-V yocto assembler
-
+        description="RISC-V yocto assembler",
+        usage="""
 Note: this is a yocto assembler, because it can only assemble a very limited set
 of assembly instructions: add, sub, and, or, lw, sw, and beq. The format for
 these instructions is as follows:
@@ -31,20 +31,24 @@ If no output file is specified, the output file will have the same relative path
 and basename as the input file but with the extension .rvt. The resulting
 machine code does not have any prelude or epilogue, but contains just the
 instructions written in the input assembly file.
-"""
+""",
     )
-    parser.add_argument("--debug", action="store_true", help="Enable debug mode")
+    parser.add_argument("--debug", action="store_true", help="enable debug mode")
     parser.add_argument("file_path", help="RISC-V assembly file")
     parser.add_argument(
         "-o",
         "--output",
-        help="Path to the output file containing the " "RISC-V machine code",
+        help="path to the output file containing the RISC-V machine code",
     )
-    parser.add_argument("--dry_run", action="store_true", help="Do not write output")
+    parser.add_argument("--dry_run", action="store_true", help="do not write output")
     parser.add_argument(
-        "--skip_errors", action="store_true", help="Skip lines that contain errors."
+        "--skip_errors", action="store_true", help="skip lines that contain errors"
     )
-    return parser.parse_args()
+    return parser
+
+
+def parse_args():
+    return make_parser().parse_args()
 
 
 def read_lines(file_path):
