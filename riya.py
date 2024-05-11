@@ -32,10 +32,13 @@ instructions written in the input assembly file.
 """)
     parser.add_argument("--debug", action="store_true", help="Enable debug mode")
     parser.add_argument("file_path", help="RISC-V assembly file")
-    parser.add_argument("-o", "--output", help="Path to the output file"
-                        "containing the RISC-V machine code")
-    parser.add_argument("--dry_run", action="store_true", help="Do not write"
-                        "output")
+    parser.add_argument("-o", "--output",
+                            help="Path to the output file containing the "
+                            "RISC-V machine code")
+    parser.add_argument("--dry_run", action="store_true",
+                            help="Do not write output")
+    parser.add_argument("--skip_errors", action="store_true",
+                            help="Skip lines that contain errors.")
     return parser.parse_args()
 
 
@@ -80,21 +83,16 @@ def write_output(args, lines):
 
 def main():
     args = parse_args()
-
     lines = read_lines(args.file_path)
-
     if lines is None:
         return
 
     debug_stripped(args, lines)
-
     lines = assemble(args, lines)
-
     if lines is None:
         return
 
     # debug_assembled(...)
-
     write_output(args, lines)
 
 

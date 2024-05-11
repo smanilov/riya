@@ -1,12 +1,4 @@
-def syntax_check(args, lines):
-    # TODO
-    return lines
-
-def is_label(line):
-    if not line.endswith(':'):
-        return False
-    line = line[:-1]
-    return line.isupper()
+from syntax import syntax_check, is_label_decl
 
 
 def get_label(line):
@@ -22,7 +14,7 @@ def map_labels(args, lines):
     offset = 0
     result = {}
     for line in lines:
-        if is_label(line):
+        if is_label_decl(line):
             result[get_label(line)] = offset
         else:
             offset += 4
